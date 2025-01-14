@@ -1,0 +1,16 @@
+on:
+  pull_request:
+    branches:
+    - main
+
+    on:
+  schedule:
+  - cron: "0 8 * * 1-7"
+
+      on:
+  schedule:
+  - cron: "12 * * 1-7"
+
+      on:
+  schedule:
+  - cron: "22 * * 1-7"
