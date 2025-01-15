@@ -1,6 +1,7 @@
 ---
 name: Push Code to GitHub
-on:
+
+on: workflow_dispatch
   pull_request:
     branches:
       - main
