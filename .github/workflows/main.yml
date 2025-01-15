@@ -1,12 +1,12 @@
-name: Mirror Repos  
-  
+name: Mirror Repos
+
 on:  
   push:  
     branches:  
       - main  
   schedule:  
     - cron: "*/10 * * * *"  
-  
+
 jobs:  
   sync:  
     runs-on: ubuntu-latest  
@@ -17,4 +17,6 @@ jobs:
           cd DatabricksPrimaryRepo  
           git remote set-url --push origin https://github.com/melilace/DatabricksSecondaryRepo.git  
           git fetch -p origin  
-          git push --mirror  
+          git push --mirror
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }} # Use the PAT stored in secrets
