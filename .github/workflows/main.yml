@@ -1,16 +1,51 @@
-on:
-  pull_request:
-    branches:
-    - main
-
-    on:
-  schedule:
-  - cron: "0 8 * * 1-7"
-
-      on:
-  schedule:
-  - cron: "12 * * 1-7"
-
-      on:
-  schedule:
-  - cron: "22 * * 1-7"
+name: Push Code to GitHub  
+  
+on:  
+  pull_request:  
+    branches:  
+      - main  
+  schedule:  
+    - cron: "0 8 * * *" # Runs at 08:00 UTC every day  
+    - cron: "0 12 * * *" # Runs at 12:00 UTC every day  
+    - cron: "0 22 * * *" # Runs at 22:00 UTC every day  
+  
+jobs:  
+  push-code:  
+    runs-on: ubuntu-latest  
+  
+    steps:  
+      - name: Checkout primary repository  
+        uses: actions/checkout@v2  
+        with:  
+          repository: melilace/DatabricksPrimaryRepo  
+          ref: main  
+  
+      - name: Checkout secondary repository  
+        uses: actions/checkout@v2  
+        with:  
+          repository: melilace/DatabricksSecondaryRepo  
+          path: secondary-repo  
+          ref: main  
+  
+      - name: Run build script  
+        run: ./build.sh  
+  
+      - name: Run tests  
+        run: ./test.sh  
+  
+      - name: Commit and push changes to secondary repository  
+        run: |  
+          cd secondary-repo  
+          git config --global user.name 'melilace'  
+          git config --global user.email 'melilace@microsoft.com'  
+          git add .  
+          git commit -m 'Automated commit from primary repo'  
+          git push  
+  
+      - name: Commit and push changes  
+        run: |  
+          git config --global user.name 'melilace'  
+          git config --global user.email 'melilace@microsoft.com'  
+          git add .  
+          git commit -m 'Automated commit'  
+          git push  
