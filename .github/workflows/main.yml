@@ -37,15 +37,4 @@ jobs:
         run: |  
           cd secondary-repo  
           git config --global user.name 'melilace'  
-          git config --global user.email 'melilace@microsoft.com'  
-          git add .  
-          git commit -m 'Automated commit from primary repo'  
-          git push  
-  
-      - name: Commit and push changes  
-        run: |  
-          git config --global user.name 'melilace'  
-          git config --global user.email 'melilace@microsoft.com'  
-          git add .  
-          git commit -m 'Automated commit'  
-          git push  
+          git config
