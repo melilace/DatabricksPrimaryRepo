@@ -1,0 +1,38 @@
+name: Sync Repos  
+  
+on:  
+  push:  
+    branches:  
+      - main  
+  # You can add more triggers, such as scheduled events  
+   schedule:  
+ - cron: "*/10 * * * *" # Runs every 10 minutes 
+  
+jobs:  
+  sync:  
+    runs-on: ubuntu-latest  
+  
+    steps:  
+      - name: Checkout source repository  
+        uses: actions/checkout@v2  
+        with:  
+          repository: melilace/DatabricksPrimaryRepo  
+          ref: main  
+  
+      - name: Push to destination repository  
+        run: |  
+          git config --global user.email "melilace@microsoft.com"  
+          git config --global user.name "melilace"  
+            
+          # Clone the destination repository  
+          git clone https://github.com/melilace/DatabricksPrimaryRepo.git  
+            
+          # Copy files from the source to the destination  
+          rsync -av --delete ./* DatabricksPrimaryRepo/  
+            
+          cd DatabricksSecondaryRepo  
+            
+          # Commit and push changes  
+          git add .  
+          git commit -m "Sync changes from DatabricksPrimaryRepo"  
+          git push origin main  
