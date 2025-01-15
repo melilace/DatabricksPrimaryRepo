@@ -17,7 +17,7 @@ jobs:
   
       - name: Add destination repository as remote  
         run: |  
-          git remote add destination https://github.com/melilace/DatabricksSecondaryRepo.git  
+          git remote add destination https://github.com/melilace/DatabricksSecondaryRepo
           git fetch destination  
   
       - name: Push changes to destination repository  
