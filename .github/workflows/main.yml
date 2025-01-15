@@ -4,20 +4,17 @@ on:
   push:  
     branches:  
       - main  
-  # You can add more triggers, such as scheduled events  
   schedule:  
-   - cron: "*/10 * * * *" # Runs every 10 minutes 
+    - cron: "*/10 * * * *"  
   
 jobs:  
   sync:  
     runs-on: ubuntu-latest  
-  
     steps:  
-      - name: Checkout source repositoryNew 
-git clone --mirror https://github.com/melilace/DatabricksPrimaryRepo.git
-
-cd REPOSITORY-TO-MIRROR
-git remote set-url --push origin https://github.com/melilace/DatabricksSecondaryRepo.git
-
-git fetch -p origin
-git push --mirror
+      - name: Checkout source repository  
+        run: |  
+          git clone --mirror https://github.com/melilace/DatabricksPrimaryRepo.git  
+          cd DatabricksPrimaryRepo  
+          git remote set-url --push origin https://github.com/melilace/DatabricksSecondaryRepo.git  
+          git fetch -p origin  
+          git push --mirror  
