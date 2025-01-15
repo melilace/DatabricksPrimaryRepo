@@ -19,4 +19,4 @@ jobs:
           git fetch -p origin  
           git push --mirror
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_Pat }} # Use the PAT stored in secrets
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }} # Use the PAT stored in secrets
