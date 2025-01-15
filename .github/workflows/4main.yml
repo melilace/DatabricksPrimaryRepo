@@ -25,7 +25,7 @@ jobs:
           git config --global user.name "melilace"  
             
           # Clone the destination repository  
-          git clone https://github.com/melilace/DatabricksPrimaryRepo.git  
+          git clone https://github.com/melilace/DatabricksSecondaryRepo.github 
             
           # Copy files from the source to the destination  
           rsync -av --delete ./* DatabricksPrimaryRepo/  
