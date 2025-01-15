@@ -1,0 +1,40 @@
+name: Sync Repositories  
+  
+on:  
+  schedule:  
+    - cron: "*/10 * * * *" # Runs every 10 minutes  
+  
+jobs:  
+  sync-repos:  
+    runs-on: ubuntu-latest  
+  
+    steps:  
+      - name: Checkout source repository  
+        uses: actions/checkout@v2  
+        with:  
+          repository: melilace/DatabricksPrimaryRepo
+          ref: main  
+  
+      - name: Add destination repository as remote  
+        run: |  
+          git remote add destination https://github.com/melilace/DatabricksSecondaryRepo.git
+          git fetch destination  
+  
+      - name: Copy files to destination repository  
+        run: |  
+          # Remove existing contents in the destination directory if needed  
+          rm -rf destination_repo_dir/*  
+            
+          # Copy files from the source repository to a local directory for the destination repository  
+          cp -R ./* destination_repo_dir/  
+  
+      - name: Commit changes  
+        run: |  
+          cd destination_repo_dir  
+          git add .  
+          git commit -m "Sync changes from source repository"  
+  
+      - name: Push changes to destination repository  
+        run: |  
+          cd destination_repo_dir  
+          git push destination HEAD:main  
