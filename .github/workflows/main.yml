@@ -1,21 +1,7 @@
-# File: .github/workflows/repo-sync.yml
+git clone --mirror https://github.com/melilace/DatabricksPrimaryRepo.git
 
-on:
-  schedule:
-  - cron:  "*/15 * * * *"
-  workflow_dispatch:
+cd REPOSITORY-TO-MIRROR
+git remote set-url --push origin https://github.com/melilace/DatabricksSecondaryRepo.git
 
-jobs:
-  repo-sync:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        persist-credentials: false
-    - name: repo-sync
-      uses: repo-sync/github-sync@v2
-      with:
-        source_repo: "melilace/DatabricksPrimaryRepo"
-        source_branch: "main"
-        destination_branch: "melilace/DatabricksSecondaryRepo"
-        sync_tags: ""
+git fetch -p origin
+git push --mirror
