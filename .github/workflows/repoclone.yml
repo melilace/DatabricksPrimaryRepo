@@ -1,5 +1,0 @@
-Cd melilace/DatabricksSecondaryRepo/Main
-git remote rm origin
-git remnote add origin https://github.com/melilace/DatabricksPrimaryRepo/new/main/
-git fetch r1remote
-git push origin master
