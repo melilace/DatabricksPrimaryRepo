@@ -19,7 +19,7 @@ jobs:
 
       - name: Set up secondary repository
         run: |
-          git remote set-url --push origin https://github.com/melilace/DatabricksSecondaryRepo.git
+          git remote set-url --push origin github.com/melilace/DatabricksSecondaryRepo.git
           git fetch -p origin
 
       - name: Push to secondary repository
