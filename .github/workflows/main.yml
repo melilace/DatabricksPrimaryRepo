@@ -11,12 +11,19 @@ jobs:
   sync:  
     runs-on: ubuntu-latest  
     steps:  
-      - name: Checkout source repository  
+      - name: Checkout source repository 
+        uses: actions/checkout@v2
+      - name: Push to destination
         run: |  
-          git clone --mirror https://github.com/melilace/DatabricksPrimaryRepo.git  
-          cd DatabricksPrimaryRepo  
-          git remote set-url --push origin https://github.com/melilace/DatabricksSecondaryRepo.git  
-          git fetch -p origin  
-          git push --mirror
+          git config --global user.email "melilace@microsoft.com"
+          git config --global user.name "melilace"
+          git clone https://${{ env.ORG_NAME }}:${{ secrets.PAT }}@github.com/${{ env.ORG_NAME }}/DatabricksSecondaryRepo.git
+          cd destination-repo
+          git remote add ${{ env.ORIGINAL_REPO_NAME }} https://${{ env.ORG_NAME }}:${{ secrets.PAT }}@github.com/${{ env.ORG_NAME }}/${{ env.ORIGINAL_REPO_NAME }}.git
+          git remote update
+          git merge ${{ env.ORIGINAL_REPO_NAME }}/main
+          git push origin main
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }} # Use the PAT stored in secrets
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          ORIGINAL_REPO_NAME: ${{ github.event.DatabricksPrimaryRepo.main }}
+          ORG_NAME: melilace
