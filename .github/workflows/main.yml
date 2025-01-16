@@ -21,9 +21,10 @@ jobs:
       - name: Checkout Secondary repository
         uses: actions/checkout@v2
         with:
-          repository: melilace/DatabricksSecondaryRepo
+          repository: https://github.com/melilace/DatabricksSecondaryRepo
           token: ${{ secrets.GITHUB_TOKEN }}
           path: secondary
+          ref: main
 
       - name: Update Secondary from Primary
         run: |
