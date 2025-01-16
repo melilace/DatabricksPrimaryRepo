@@ -25,4 +25,4 @@ jobs:
       - name: Push to secondary repository
         run: git push --mirror
         env:
-          GITHUB_TOKEN: ${{ secrets.MLSECRET }}
+          GITHUB_TOKEN: ${{ secrets.MLSECRET2 }}
