@@ -16,13 +16,23 @@ jobs:
         with:
           repository: melilace/DatabricksPrimaryRepo
           token: ${{ secrets.GITHUB_TOKEN }}
+          path: primary
+      - name: Checkout Secondary repository
+        uses: actions/checkout@v2
+        with:
+          repository: melilace/DatabricksSecondaryRepo
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: secondary
 
-      - name: Set up secondary repository
+      - name: Update Secondary from Primary
         run: |
-          git remote set-url --push origin github.com/melilace/DatabricksSecondaryRepo.git
-          git fetch -p origin
-
-      - name: Push to secondary repository
-        run: git push --mirror
-        env:
-          GITHUB_TOKEN: ${{ secrets.MLSECRET2 }}
+          cp -r primary/* secondary/
+                          
+      - name: Commit and push changes
+        run: |
+          cd secondary
+          git config --global user.name 'melilace'
+          git config --global user.email 'melilace@microsoft.com'
+          git add .
+          git commit -m "Sync from primary"
+          git push
