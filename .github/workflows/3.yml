@@ -65,7 +65,7 @@ jobs:
           git config --global user.name "github-actions[bot]"  
           git config --global user.email "github-actions[bot]@users.noreply.github.com"  
   
-          # Add changes to the .github directory  
+          # Add changes to the tracked files  
           git add ${{ env.LOCAL_EXPORT_DIR }}  
   
           # Check for changes and commit them  
@@ -73,6 +73,10 @@ jobs:
             echo "No changes to commit."  
           else  
             git commit -m "Automated sync: Export notebooks from Azure Databricks"  
-           # Push the changes to the repository  
+              
+            # Authenticate with the GITHUB_TOKEN for pushing  
+            git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git  
+              
+            # Push the changes to the repository  
             git push  
           fi  
