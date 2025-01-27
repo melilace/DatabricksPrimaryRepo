@@ -5,6 +5,11 @@ on:
     - cron: "0 0 * * *" # Runs daily at midnight UTC  
   workflow_dispatch: # Allows manual triggering from GitHub Actions  
   
+env:  
+  # Variable for the Databricks workspace directory to export  
+  DATABRICKS_WORKSPACE_DIR: "https://adb-1192531318314324.4.azuredatabricks.net/browse/folders/workspace?o=1192531318314324" # Modify this value as needed  
+  LOCAL_EXPORT_DIR: "./notebooks" # Local export directory in the GitHub repository  
+  
 jobs:  
   pull-notebooks:  
     runs-on: ubuntu-latest  
@@ -37,14 +42,19 @@ jobs:
           EOF  
   
       # Step 5: Export Notebooks from Databricks Workspace  
-      # Pull notebooks directly into the GitHub repository folder structure  
       - name: Export Notebooks  
+        env:  
+          WORKSPACE_DIR: ${{ env.DATABRICKS_WORKSPACE_DIR }}  
+          EXPORT_DIR: ${{ env.LOCAL_EXPORT_DIR }}  
         run: |  
-          # Ensure the notebooks folder exists in the repo  
-          mkdir -p ./notebooks  
+          echo "Exporting notebooks from Databricks workspace directory: $WORKSPACE_DIR"  
+          echo "Exporting to local directory: $EXPORT_DIR"  
   
-          # Export notebooks from the specified Databricks workspace directory  
-          databricks workspace export_dir https://adb-1192531318314324.4.azuredatabricks.net/./notebooks --overwrite  
+          # Ensure the export directory exists  
+          mkdir -p $EXPORT_DIR  
+  
+          # Export notebooks from the specified workspace directory  
+          databricks workspace export_dir $WORKSPACE_DIR $EXPORT_DIR --overwrite  
   
       # Step 6: Commit and Push Changes to GitHub  
       - name: Commit and Push Changes  
@@ -54,7 +64,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"  
   
           # Check for changes and commit  
-          git add notebooks/  
+          git add ${{ env.LOCAL_EXPORT_DIR }}  
           if git diff-index --quiet HEAD; then  
             echo "No changes to commit."  
           else  
