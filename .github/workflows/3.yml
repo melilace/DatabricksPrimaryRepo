@@ -1,5 +1,6 @@
 name: New Pull2345
-
+name: Pull Notebooks from Azure Databricks  
+  
 on:  
   schedule:  
     - cron: "0 0 * * *" # Runs daily at midnight UTC  
@@ -46,3 +47,30 @@ jobs:
           DATABRICKS_TOKEN: "dapi9f33ac2e1e2128bf66bc282a41e11428-3" # Replace with your actual token  
           WORKSPACE_DIR: ${{ env.DATABRICKS_WORKSPACE_DIR }}  
           EXPORT_DIR: ${{ env.LOCAL_EXPORT_DIR }}  
+        run: |  
+          echo "Exporting notebooks from Databricks workspace directory: $WORKSPACE_DIR"  
+          echo "Exporting to local directory: $EXPORT_DIR"  
+  
+          # Ensure the export directory exists  
+          mkdir -p $EXPORT_DIR  
+  
+          # Export notebooks from the specified workspace directory  
+          databricks workspace export_dir $WORKSPACE_DIR $EXPORT_DIR --overwrite  
+  
+      # Step 6: Commit and Push Changes to GitHub  
+      - name: Commit and Push Changes  
+        env:  
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
+        run: |  
+          # Configure Git for the GitHub Actions bot  
+          git config --global user.name "github-actions[bot]"  
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"  
+  
+          # Add changes to the .github directory  
+          git add ${{ env.LOCAL_EXPORT_DIR }}  
+  
+          # Check for changes and commit them  
+          if git diff-index --quiet HEAD; then  
+            echo "No changes to commit."  
+          else  
+            git commit -m "Automated sync: Export notebooks from Azure Databricks"  
