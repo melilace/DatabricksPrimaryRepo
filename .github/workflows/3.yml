@@ -1,6 +1,5 @@
 name: New Pull2345
-name: Pull Notebooks from Azure Databricks  
-  
+
 on:  
   schedule:  
     - cron: "0 0 * * *" # Runs daily at midnight UTC  
