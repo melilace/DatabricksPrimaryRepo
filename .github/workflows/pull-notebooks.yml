@@ -18,8 +18,6 @@ jobs:
       # Step 1: Checkout the GitHub repository  
       - name: Checkout repository  
         uses: actions/checkout@v3  
-        with:  
-          token: ${{ secrets.GITHUB_TOKEN }}  
   
       # Step 2: Set up Python environment for Databricks CLI  
       - name: Set up Python  
@@ -32,22 +30,11 @@ jobs:
         run: |  
           pip install databricks-cli  
   
-      # Step 4: Configure Databricks CLI with hardcoded PAT  
-      - name: Configure Databricks CLI  
-        run: |  
-          # Replace the placeholders with your actual Databricks host and PAT  
-          DATABRICKS_HOST="https://adb-1192531318314324.4.azuredatabricks.net"  
-          DATABRICKS_TOKEN="your-personal-access-token-here"  
-  
-          echo "Configuring Databricks CLI with hardcoded credentials..."  
-          databricks configure --token <<EOF  
-          $DATABRICKS_HOST  
-          $DATABRICKS_TOKEN  
-          EOF  
-  
-      # Step 5: Export Notebooks from Databricks Workspace  
+      # Step 4: Export Notebooks from Databricks Workspace with authentication  
       - name: Export Notebooks  
         env:  
+          DATABRICKS_HOST: "https://adb-1192531318314324.4.azuredatabricks.net"  
+          DATABRICKS_TOKEN: "dapi9f33ac2e1e2128bf66bc282a41e11428-3"  
           WORKSPACE_DIR: ${{ env.DATABRICKS_WORKSPACE_DIR }}  
           EXPORT_DIR: ${{ env.LOCAL_EXPORT_DIR }}  
         run: |  
@@ -58,24 +45,4 @@ jobs:
           mkdir -p $EXPORT_DIR  
   
           # Export notebooks from the specified workspace directory  
-          databricks workspace export_dir $WORKSPACE_DIR $EXPORT_DIR --overwrite  
-  
-      # Step 6: Commit and Push Changes to GitHub  
-      - name: Commit and Push Changes  
-        env:  
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
-        run: |  
-          # Configure Git for the GitHub Actions bot  
-          git config --global user.name "github-actions[bot]"  
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"  
-  
-          # Add changes to the .github directory  
-          git add ${{ env.LOCAL_EXPORT_DIR }}  
-  
-          # Check for changes and commit them  
-          if git diff-index --quiet HEAD; then  
-            echo "No changes to commit."  
-          else  
-            git commit -m "Automated sync: Export notebooks from Azure Databricks"  
-            git push  
-          fi  
+          databricks workspace export_dir --profile=DEFAULT $WORKSPACE_DIR $EXPORT_DIR --overwrite  
