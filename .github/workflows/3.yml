@@ -44,6 +44,6 @@ jobs:
       - name: Export Notebooks  
         env:  
           DATABRICKS_HOST: "https://adb-1192531318314324.4.azuredatabricks.net" # Replace with your Databricks host  
-          DATABRICKS_TOKEN: "your-personal-access-token-here" # Replace with your actual token  
+          DATABRICKS_TOKEN: "dapi9f33ac2e1e2128bf66bc282a41e11428-3" # Replace with your actual token  
           WORKSPACE_DIR: ${{ env.DATABRICKS_WORKSPACE_DIR }}  
           EXPORT_DIR: ${{ env.LOCAL_EXPORT_DIR }}  
