@@ -44,7 +44,7 @@ jobs:
           mkdir -p ./notebooks  
   
           # Export notebooks from the specified Databricks workspace directory  
-          databricks workspace export_dir /Workspace/YourDirectory ./notebooks --overwrite  
+          databricks workspace export_dir https://adb-1192531318314324.4.azuredatabricks.net/./notebooks --overwrite  
   
       # Step 6: Commit and Push Changes to GitHub  
       - name: Commit and Push Changes  
