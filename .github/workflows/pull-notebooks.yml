@@ -1,0 +1,63 @@
+name: Pull Notebooks from Azure Databricks  
+  
+on:  
+  schedule:  
+    - cron: "0 0 * * *" # Runs daily at midnight UTC  
+  workflow_dispatch: # Allows manual triggering from GitHub Actions  
+  
+jobs:  
+  pull-notebooks:  
+    runs-on: ubuntu-latest  
+  
+    steps:  
+      # Step 1: Checkout the GitHub repository  
+      - name: Checkout repository  
+        uses: actions/checkout@v3  
+  
+      # Step 2: Set up Python environment for Databricks CLI  
+      - name: Set up Python  
+        uses: actions/setup-python@v4  
+        with:  
+          python-version: "3.x"  
+  
+      # Step 3: Install Databricks CLI  
+      - name: Install Databricks CLI  
+        run: |  
+          pip install databricks-cli  
+  
+      # Step 4: Configure Databricks CLI  
+      - name: Configure Databricks CLI  
+        env:  
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}  
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}  
+        run: |  
+          databricks configure --token <<EOF  
+          $DATABRICKS_HOST  
+          $DATABRICKS_TOKEN  
+          EOF  
+  
+      # Step 5: Export Notebooks from Databricks Workspace  
+      # Pull notebooks directly into the GitHub repository folder structure  
+      - name: Export Notebooks  
+        run: |  
+          # Ensure the notebooks folder exists in the repo  
+          mkdir -p ./notebooks  
+  
+          # Export notebooks from the specified Databricks workspace directory  
+          databricks workspace export_dir /Workspace/YourDirectory ./notebooks --overwrite  
+  
+      # Step 6: Commit and Push Changes to GitHub  
+      - name: Commit and Push Changes  
+        run: |  
+          # Configure Git for the GitHub Actions bot  
+          git config --global user.name "github-actions[bot]"  
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"  
+  
+          # Check for changes and commit  
+          git add notebooks/  
+          if git diff-index --quiet HEAD; then  
+            echo "No changes to commit."  
+          else  
+            git commit -m "Automated sync: Export notebooks from Azure Databricks"  
+            git push  
+          fi  
