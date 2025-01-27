@@ -7,7 +7,7 @@ on:
   
 env:  
   # Variable for the Databricks workspace directory to export  
-  DATABRICKS_WORKSPACE_DIR: "https://adb-1192531318314324.4.azuredatabricks.net/browse/folders/workspace?o=1192531318314324" # Modify this value as needed  
+  DATABRICKS_WORKSPACE_DIR: "https://adb-1192531318314324.4.azuredatabricks.net/browse/folders/2533989625426166?o=1192531318314324" # Modify this value as needed  
   LOCAL_EXPORT_DIR: "./notebooks" # Local export directory in the GitHub repository  
   
 jobs:  
