@@ -1,6 +1,5 @@
-name: New Pull
+name: New Pull2345
 
-  
 on:  
   schedule:  
     - cron: "0 0 * * *" # Runs daily at midnight UTC  
