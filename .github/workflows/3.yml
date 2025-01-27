@@ -1,0 +1,74 @@
+name: New Pull
+  
+on:  
+  schedule:  
+    - cron: "0 0 * * *" # Runs daily at midnight UTC  
+  workflow_dispatch: # Allows manual triggering from GitHub Actions  
+  
+env:  
+  # Relative path to the Databricks workspace directory to export  
+  DATABRICKS_WORKSPACE_DIR: "/Workspace/Users/admin@mngenvmcap684248.onmicrosoft.com/Primary/.github"  
+  LOCAL_EXPORT_DIR: ".github" # Local export directory in the GitHub repository  
+  
+jobs:  
+  pull-notebooks:  
+    runs-on: ubuntu-latest  
+  
+    steps:  
+      # Step 1: Checkout the GitHub repository  
+      - name: Checkout repository  
+        uses: actions/checkout@v3  
+  
+      # Step 2: Set up Python environment for Databricks CLI  
+      - name: Set up Python  
+        uses: actions/setup-python@v4  
+        with:  
+          python-version: "3.x"  
+  
+      # Step 3: Install Databricks CLI  
+      - name: Install Databricks CLI  
+        run: |  
+          pip install databricks-cli  
+  
+      # Step 4: Configure Databricks CLI (set up `DEFAULT` profile)  
+      - name: Configure Databricks CLI  
+        env:  
+          DATABRICKS_HOST: "https://adb-1192531318314324.4.azuredatabricks.net"  
+          DATABRICKS_TOKEN: "dapi9f33ac2e1e2128bf66bc282a41e11428-3" # Hardcoded token  
+        run: |  
+          echo "your-personal-access-token-here" | databricks configure --token --host "$DATABRICKS_HOST"  
+  
+      # Step 5: Export Notebooks from Databricks Workspace  
+      - name: Export Notebooks  
+        env:  
+          DATABRICKS_HOST: "https://adb-1192531318314324.4.azuredatabricks.net"  
+          DATABRICKS_TOKEN: "your-personal-access-token-here" # Hardcoded token  
+          WORKSPACE_DIR: ${{ env.DATABRICKS_WORKSPACE_DIR }}  
+          EXPORT_DIR: ${{ env.LOCAL_EXPORT_DIR }}  
+        run: |  
+          echo "Exporting notebooks from Databricks workspace directory: $WORKSPACE_DIR"  
+          echo "Exporting to local directory: $EXPORT_DIR"  
+  
+          # Ensure the export directory exists  
+          mkdir -p $EXPORT_DIR  
+  
+          # Export notebooks from the specified workspace directory  
+          databricks workspace export_dir $WORKSPACE_DIR $EXPORT_DIR --overwrite  
+  
+      # Step 6: Commit and Push Changes to GitHub  
+      - name: Commit and Push Changes  
+        env:  
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
+        run: |  
+          # Configure Git for the GitHub Actions bot  
+          git config --global user.name "github-actions[bot]"  
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"  
+  
+          # Add changes to the .github directory  
+          git add ${{ env.LOCAL_EXPORT_DIR }}  
+  
+          # Check for changes and commit them  
+          if git diff-index --quiet HEAD; then  
+            echo "No changes to commit."  
+          else  
+            git commit -m "
