@@ -6,10 +6,10 @@ on:
   workflow_dispatch: # Allows manual triggering from GitHub Actions  
   
 env:  
-  # Variable for the Databricks workspace directory to export  
-  DATABRICKS_WORKSPACE_DIR: https://adb-1192531318314324.4.azuredatabricks.net # Modify this value as needed  
+  # Relative path to the Databricks workspace directory to export  
+  DATABRICKS_WORKSPACE_DIR: "/Workspace/Users/admin@mngenvmcap684248.onmicrosoft.com/Primary/.github"  
   LOCAL_EXPORT_DIR: "./notebooks" # Local export directory in the GitHub repository  
-
+  
 jobs:  
   pull-notebooks:  
     runs-on: ubuntu-latest  
@@ -30,12 +30,14 @@ jobs:
         run: |  
           pip install databricks-cli  
   
-      # Step 4: Configure Databricks CLI  
+      # Step 4: Configure Databricks CLI with hardcoded PAT  
       - name: Configure Databricks CLI  
-        env:  
-          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}  
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}  
         run: |  
+          # Replace the placeholders with your actual Databricks host and PAT  
+          DATABRICKS_HOST="https://adb-1192531318314324.4.azuredatabricks.net"  
+          DATABRICKS_TOKEN="dapi9f33ac2e1e2128bf66bc282a41e11428-3"  
+  
+          echo "Configuring Databricks CLI with hardcoded credentials..."  
           databricks configure --token <<EOF  
           $DATABRICKS_HOST  
           $DATABRICKS_TOKEN  
