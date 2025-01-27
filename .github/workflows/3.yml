@@ -1,5 +1,6 @@
 name: New Pull2345
 
+  
 on:  
   schedule:  
     - cron: "0 0 * * *" # Runs daily at midnight UTC  
@@ -72,4 +73,4 @@ jobs:
           if git diff-index --quiet HEAD; then  
             echo "No changes to commit."  
           else  
-            git commit -m "Automated sync: Export notebooks from Azure Databricks"  
+           
